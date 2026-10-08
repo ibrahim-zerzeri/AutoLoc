@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.math.BigDecimal;
+import java.util.Set;
+
 import tn.esprit.tpautoloc.domain.enums.*;
 @Entity
 @Table(name = "vehicule")
@@ -22,4 +24,13 @@ public class Vehicule {
     private CategorieVehicule categorie;
     private BigDecimal tarifJournalier;
     private StatutVehicule statut;
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "vehicule")
+    private Set<Reservation> reservations;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "vehicule")
+    private Set<Maintenance> maintenances;
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<Equipement> equipements;
+    @ManyToOne
+    Agence agence;
+
 }

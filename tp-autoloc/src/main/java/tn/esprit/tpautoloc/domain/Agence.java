@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Entity
 @Table(name = "agence")
@@ -20,5 +21,8 @@ public class Agence {
     private String ville;
     private String adresse;
     private String telephone;
-
+@OneToMany(cascade = CascadeType.ALL,mappedBy = "agence")
+    private Set<Vehicule> vehicules;
+@OneToMany(cascade = CascadeType.ALL,mappedBy = "agence")
+    private  Set<Employe> employes;
 }
