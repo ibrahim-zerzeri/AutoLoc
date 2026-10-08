@@ -23,5 +23,5 @@ public class Paiement {
     private LocalDate datePaiement;
     private ModelPaiement modePaiement;
     @ManyToOne
-    Contrat contrat;
+    private Contrat contrat;
 }

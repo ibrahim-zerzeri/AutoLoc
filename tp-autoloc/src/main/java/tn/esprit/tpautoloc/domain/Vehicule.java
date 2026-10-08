@@ -31,6 +31,6 @@ public class Vehicule {
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Equipement> equipements;
     @ManyToOne
-    Agence agence;
+    private Agence agence;
 
 }

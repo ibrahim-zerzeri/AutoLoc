@@ -25,7 +25,7 @@ public class Reservation {
     @OneToOne
     private Contrat contrat;
     @ManyToOne
-    Client client;
+    private Client client;
     @ManyToOne
-    Vehicule vehicule;
+    private Vehicule vehicule;
 }
