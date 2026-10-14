@@ -10,4 +10,9 @@ public interface IMaintenanceService {
     List<Maintenance> findAll();
     Maintenance update(Long id, Maintenance maintenance);
     void deleteById(Long id);
+    long count();
+    boolean existsById(Long id);
+    default Maintenance save(Maintenance maintenance) {
+        return create(maintenance);
+    }
 }

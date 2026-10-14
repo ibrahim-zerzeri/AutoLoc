@@ -8,6 +8,11 @@ public interface IEmployeService {
     Employe create(Employe employe);
     Employe findById(Long id);
     List<Employe> findAll();
-    Employe update(Long id, Employe contrat);
+    Employe update(Long id, Employe employe);
     void deleteById(Long id);
+    long count();
+    boolean existsById(Long id);
+    default Employe save(Employe employe) {
+        return create(employe);
+    }
 }

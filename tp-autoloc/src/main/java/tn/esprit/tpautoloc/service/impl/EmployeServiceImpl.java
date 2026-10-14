@@ -45,4 +45,12 @@ public class EmployeServiceImpl implements IEmployeService {
         }
         employeRepository.deleteById(id);
     }
+    @Override
+    public long count() {
+        return employeRepository.count();
+    }
+    @Override
+    public boolean existsById(Long id) {
+        return employeRepository.existsById(id);
+    }
 }

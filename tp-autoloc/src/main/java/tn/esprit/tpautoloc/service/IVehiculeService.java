@@ -10,4 +10,9 @@ public interface IVehiculeService {
     List<Vehicule> findAll();
     Vehicule update(Long id, Vehicule vehicule);
     void deleteById(Long id);
+    long count();
+    boolean existsById(Long id);
+    default Vehicule save(Vehicule vehicule) {
+        return create(vehicule);
+    }
 }

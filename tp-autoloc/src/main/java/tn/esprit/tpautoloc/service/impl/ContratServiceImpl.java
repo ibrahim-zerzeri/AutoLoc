@@ -44,4 +44,12 @@ public class ContratServiceImpl implements IContratService {
         }
         contratRepository.deleteById(id);
     }
+    @Override
+    public long count() {
+        return contratRepository.count();
+    }
+    @Override
+    public boolean existsById(Long id) {
+        return contratRepository.existsById(id);
+    }
 }

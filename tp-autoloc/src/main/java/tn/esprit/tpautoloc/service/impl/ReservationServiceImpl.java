@@ -46,4 +46,12 @@ public class ReservationServiceImpl implements IReservationService {
         }
         reservationRepository.deleteById(id);
     }
+    @Override
+    public long count() {
+        return reservationRepository.count();
+    }
+    @Override
+    public boolean existsById(Long id) {
+        return reservationRepository.existsById(id);
+    }
 }

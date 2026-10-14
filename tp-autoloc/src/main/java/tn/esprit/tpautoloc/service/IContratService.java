@@ -10,4 +10,9 @@ public interface IContratService {
     List<Contrat> findAll();
     Contrat update(Long id, Contrat contrat);
     void deleteById(Long id);
+    long count();
+    boolean existsById(Long id);
+    default Contrat save(Contrat contrat) {
+        return create(contrat);
+    }
 }

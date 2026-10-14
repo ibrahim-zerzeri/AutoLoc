@@ -45,4 +45,12 @@ public class PaiementServiceImpl implements IPaiementService {
         }
         paiementRepository.deleteById(id);
     }
+    @Override
+    public long count() {
+        return paiementRepository.count();
+    }
+    @Override
+    public boolean existsById(Long id) {
+        return paiementRepository.existsById(id);
+    }
 }

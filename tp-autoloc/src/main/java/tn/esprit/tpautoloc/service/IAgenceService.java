@@ -10,4 +10,9 @@ public interface IAgenceService {
     List<Agence> findAll();
     Agence update(Long id, Agence agence);
     void deleteById(Long id);
+    long count();
+    boolean existsById(Long id);
+    default Agence save(Agence agence) {
+        return create(agence);
+    }
 }

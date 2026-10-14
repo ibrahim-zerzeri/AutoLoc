@@ -10,4 +10,9 @@ public interface IReservationService {
     List<Reservation> findAll();
     Reservation update(Long id, Reservation reservation);
     void deleteById(Long id);
+    long count();
+    boolean existsById(Long id);
+    default Reservation save(Reservation reservation) {
+        return create(reservation);
+    }
 }

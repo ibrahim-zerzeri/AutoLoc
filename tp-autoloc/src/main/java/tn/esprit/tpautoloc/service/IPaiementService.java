@@ -10,4 +10,9 @@ public interface IPaiementService {
     List<Paiement> findAll();
     Paiement update(Long id, Paiement paiement);
     void deleteById(Long id);
+    long count();
+    boolean existsById(Long id);
+    default Paiement save(Paiement paiement) {
+        return create(paiement);
+    }
 }
