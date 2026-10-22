@@ -1,4 +1,6 @@
 package tn.esprit.tpautoloc.domain;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,13 +18,16 @@ import java.util.Set;
 public class Agence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonAlias("id")
     private Long idAgence;
     private String nom;
     private String ville;
     private String adresse;
     private String telephone;
-@OneToMany(cascade = CascadeType.ALL,mappedBy = "agence")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "agence")
+    @JsonIgnore
     private Set<Vehicule> vehicules;
-@OneToMany(cascade = CascadeType.ALL,mappedBy = "agence")
-    private  Set<Employe> employes;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "agence")
+    @JsonIgnore
+    private Set<Employe> employes;
 }

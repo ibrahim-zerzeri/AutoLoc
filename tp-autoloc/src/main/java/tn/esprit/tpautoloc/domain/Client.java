@@ -1,4 +1,6 @@
 package tn.esprit.tpautoloc.domain;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +19,7 @@ import java.util.Set;
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonAlias("id")
     private Long idClient;
     private String nom;
     private String prenom;
@@ -24,6 +27,7 @@ public class Client {
     private String telephone;
     private String numPermis;
     private LocalDate dateInscription;
-@OneToMany (cascade = CascadeType.ALL,mappedBy = "client" )
-private Set<Reservation> reservations;
+    @OneToMany (cascade = CascadeType.ALL,mappedBy = "client" )
+    @JsonIgnore
+    private Set<Reservation> reservations;
 }

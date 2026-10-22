@@ -20,6 +20,12 @@ public class AgenceServiceImpl implements IAgenceService {
             throw new IllegalArgumentException(
                     "Une nouvelle agence ne doit pas avoir d'identifiant");
         }
+        if (agence.getNom() == null || agence.getNom().trim().isEmpty()) {
+            throw new IllegalArgumentException("Le nom de l'agence est obligatoire");
+        }
+        if (agence.getVille() == null || agence.getVille().trim().isEmpty()) {
+            throw new IllegalArgumentException("La ville de l'agence est obligatoire");
+        }
         return agenceRepository.save(agence);
     }
     @Override
@@ -34,9 +40,24 @@ public class AgenceServiceImpl implements IAgenceService {
     @Override
     public Agence update(Long id, Agence agence) {
         Agence existant = findById(id);
-        existant.setVille(agence.getVille());
-// recopier ici les autres attributs modifiables du agence (Atelier 2),
-// sans toucher à l'identifiant ni à la collection de paiements
+        if (agence.getNom() != null) {
+            if (agence.getNom().trim().isEmpty()) {
+                throw new IllegalArgumentException("Le nom de l'agence ne peut pas être vide");
+            }
+            existant.setNom(agence.getNom());
+        }
+        if (agence.getVille() != null) {
+            if (agence.getVille().trim().isEmpty()) {
+                throw new IllegalArgumentException("La ville de l'agence ne peut pas être vide");
+            }
+            existant.setVille(agence.getVille());
+        }
+        if (agence.getAdresse() != null) {
+            existant.setAdresse(agence.getAdresse());
+        }
+        if (agence.getTelephone() != null) {
+            existant.setTelephone(agence.getTelephone());
+        }
         return agenceRepository.save(existant);
     }
     @Override

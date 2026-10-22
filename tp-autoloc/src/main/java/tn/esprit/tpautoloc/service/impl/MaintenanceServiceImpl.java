@@ -19,6 +19,10 @@ public class MaintenanceServiceImpl implements IMaintenanceService {
             throw new IllegalArgumentException(
                     "Une nouvelle maintenance ne doit pas avoir d'identifiant");
         }
+        if (maintenance.getDateDebut() != null && maintenance.getDateFin() != null &&
+                maintenance.getDateFin().isBefore(maintenance.getDateDebut())) {
+            throw new IllegalArgumentException("La date de fin ne peut pas être antérieure à la date de début");
+        }
         return maintenanceRepository.save(maintenance);
     }
     @Override
@@ -33,9 +37,22 @@ public class MaintenanceServiceImpl implements IMaintenanceService {
     @Override
     public Maintenance update(Long id, Maintenance maintenance) {
         Maintenance existant = findById(id);
-        existant.setDescription(maintenance.getDescription());
-// recopier ici les autres attributs modifiables du maintenance (Atelier 2),
-// sans toucher à l'identifiant ni à la collection de paiements
+        if (maintenance.getDateDebut() != null) {
+            existant.setDateDebut(maintenance.getDateDebut());
+        }
+        if (maintenance.getDateFin() != null) {
+            existant.setDateFin(maintenance.getDateFin());
+        }
+        if (existant.getDateDebut() != null && existant.getDateFin() != null &&
+                existant.getDateFin().isBefore(existant.getDateDebut())) {
+            throw new IllegalArgumentException("La date de fin ne peut pas être antérieure à la date de début");
+        }
+        if (maintenance.getDescription() != null) {
+            existant.setDescription(maintenance.getDescription());
+        }
+        if (maintenance.getVehicule() != null) {
+            existant.setVehicule(maintenance.getVehicule());
+        }
         return maintenanceRepository.save(existant);
     }
     @Override

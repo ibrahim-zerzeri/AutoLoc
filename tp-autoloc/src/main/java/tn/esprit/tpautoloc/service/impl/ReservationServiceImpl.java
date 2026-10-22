@@ -18,7 +18,11 @@ public class ReservationServiceImpl implements IReservationService {
     public Reservation create(Reservation reservation) {
         if (reservation.getIdReservation() != null) {
             throw new IllegalArgumentException(
-                    "Une nouvelle  reservation ne doit pas avoir d'identifiant");
+                    "Une nouvelle réservation ne doit pas avoir d'identifiant");
+        }
+        if (reservation.getDateDebut() != null && reservation.getDateFin() != null &&
+                reservation.getDateFin().isBefore(reservation.getDateDebut())) {
+            throw new IllegalArgumentException("La date de fin ne peut pas être antérieure à la date de début");
         }
         return reservationRepository.save(reservation);
     }
@@ -34,15 +38,34 @@ public class ReservationServiceImpl implements IReservationService {
     @Override
     public Reservation update(Long id, Reservation reservation) {
         Reservation existant = findById(id);
-        existant.setStatut(reservation.getStatut());
-// recopier ici les autres attributs modifiables du reservation (Atelier 2),
-// sans toucher à l'identifiant ni à la collection de paiements
+        if (reservation.getDateDebut() != null) {
+            existant.setDateDebut(reservation.getDateDebut());
+        }
+        if (reservation.getDateFin() != null) {
+            existant.setDateFin(reservation.getDateFin());
+        }
+        if (existant.getDateDebut() != null && existant.getDateFin() != null &&
+                existant.getDateFin().isBefore(existant.getDateDebut())) {
+            throw new IllegalArgumentException("La date de fin ne peut pas être antérieure à la date de début");
+        }
+        if (reservation.getStatut() != null) {
+            existant.setStatut(reservation.getStatut());
+        }
+        if (reservation.getClient() != null) {
+            existant.setClient(reservation.getClient());
+        }
+        if (reservation.getVehicule() != null) {
+            existant.setVehicule(reservation.getVehicule());
+        }
+        if (reservation.getContrat() != null) {
+            existant.setContrat(reservation.getContrat());
+        }
         return reservationRepository.save(existant);
     }
     @Override
     public void deleteById(Long id) {
         if (!reservationRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Contrat", id);
+            throw new ResourceNotFoundException("Reservation", id);
         }
         reservationRepository.deleteById(id);
     }

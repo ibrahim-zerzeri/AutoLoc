@@ -1,4 +1,6 @@
 package tn.esprit.tpautoloc.domain;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +19,7 @@ import tn.esprit.tpautoloc.domain.enums.*;
 public class Vehicule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonAlias("id")
     private Long idVehicule;
     private String immatriculation;
     private String marque;
@@ -24,11 +27,14 @@ public class Vehicule {
     private CategorieVehicule categorie;
     private BigDecimal tarifJournalier;
     private StatutVehicule statut;
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "vehicule")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "vehicule")
+    @JsonIgnore
     private Set<Reservation> reservations;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vehicule")
+    @JsonIgnore
     private Set<Maintenance> maintenances;
     @ManyToMany(cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<Equipement> equipements;
     @ManyToOne
     private Agence agence;

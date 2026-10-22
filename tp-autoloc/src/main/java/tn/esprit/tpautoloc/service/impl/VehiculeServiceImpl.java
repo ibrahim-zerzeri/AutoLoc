@@ -14,12 +14,15 @@ import java.util.List;
 public class VehiculeServiceImpl implements IVehiculeService {
     private final IVehiculeRepository vehiculeRepository;
     @Override
-    public Vehicule create(Vehicule contrat) {
-        if (contrat.getIdVehicule() != null) {
+    public Vehicule create(Vehicule vehicule) {
+        if (vehicule.getIdVehicule() != null) {
             throw new IllegalArgumentException(
-                    "Un nouveau vehicule ne doit pas avoir d'identifiant");
+                    "Un nouveau véhicule ne doit pas avoir d'identifiant");
         }
-        return vehiculeRepository.save(contrat);
+        if (vehicule.getTarifJournalier() != null && vehicule.getTarifJournalier().compareTo(java.math.BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Le tarif journalier ne peut pas être négatif");
+        }
+        return vehiculeRepository.save(vehicule);
     }
     @Override
     public Vehicule findById(Long id) {
@@ -31,11 +34,32 @@ public class VehiculeServiceImpl implements IVehiculeService {
         return vehiculeRepository.findAll();
     }
     @Override
-    public Vehicule update(Long id, Vehicule contrat) {
+    public Vehicule update(Long id, Vehicule vehicule) {
         Vehicule existant = findById(id);
-        existant.setModele(contrat.getModele());
-// recopier ici les autres attributs modifiables du vehicule (Atelier 2),
-// sans toucher à l'identifiant ni à la collection de paiements
+        if (vehicule.getTarifJournalier() != null) {
+            if (vehicule.getTarifJournalier().compareTo(java.math.BigDecimal.ZERO) < 0) {
+                throw new IllegalArgumentException("Le tarif journalier ne peut pas être négatif");
+            }
+            existant.setTarifJournalier(vehicule.getTarifJournalier());
+        }
+        if (vehicule.getImmatriculation() != null) {
+            existant.setImmatriculation(vehicule.getImmatriculation());
+        }
+        if (vehicule.getMarque() != null) {
+            existant.setMarque(vehicule.getMarque());
+        }
+        if (vehicule.getModele() != null) {
+            existant.setModele(vehicule.getModele());
+        }
+        if (vehicule.getCategorie() != null) {
+            existant.setCategorie(vehicule.getCategorie());
+        }
+        if (vehicule.getStatut() != null) {
+            existant.setStatut(vehicule.getStatut());
+        }
+        if (vehicule.getAgence() != null) {
+            existant.setAgence(vehicule.getAgence());
+        }
         return vehiculeRepository.save(existant);
     }
     @Override

@@ -19,6 +19,10 @@ public class ClientServiceImpl implements IClientService {
             throw new IllegalArgumentException(
                     "Un nouveau client ne doit pas avoir d'identifiant");
         }
+        if (client.getNom() == null || client.getNom().trim().isEmpty() ||
+                client.getPrenom() == null || client.getPrenom().trim().isEmpty()) {
+            throw new IllegalArgumentException("L'attribut d'identification (nom et prénom) est obligatoire");
+        }
         return clientRepository.save(client);
     }
     @Override
@@ -33,9 +37,27 @@ public class ClientServiceImpl implements IClientService {
     @Override
     public Client update(Long id, Client client) {
         Client existant = findById(id);
-        existant.setNumPermis(client.getNumPermis());
-// recopier ici les autres attributs modifiables du client (Atelier 2),
-// sans toucher à l'identifiant ni à la collection de paiements
+        if (client.getNom() != null) {
+            if (client.getNom().trim().isEmpty()) {
+                throw new IllegalArgumentException("Le nom du client ne peut pas être vide");
+            }
+            existant.setNom(client.getNom());
+        }
+        if (client.getPrenom() != null) {
+            if (client.getPrenom().trim().isEmpty()) {
+                throw new IllegalArgumentException("Le prénom du client ne peut pas être vide");
+            }
+            existant.setPrenom(client.getPrenom());
+        }
+        if (client.getEmail() != null) {
+            existant.setEmail(client.getEmail());
+        }
+        if (client.getTelephone() != null) {
+            existant.setTelephone(client.getTelephone());
+        }
+        if (client.getNumPermis() != null) {
+            existant.setNumPermis(client.getNumPermis());
+        }
         return clientRepository.save(existant);
     }
     @Override

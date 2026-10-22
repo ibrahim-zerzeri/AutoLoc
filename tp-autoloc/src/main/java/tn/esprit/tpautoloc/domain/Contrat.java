@@ -1,4 +1,7 @@
 package tn.esprit.tpautoloc.domain;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,12 +23,15 @@ import java.util.Set;
 public class Contrat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonAlias("id")
     private Long idContrat;
     private LocalDate dateSignature;
     private  BigDecimal montantTotal;
     private boolean valide;
     @OneToOne (mappedBy = "contrat")
+    @JsonIgnore
     private Reservation reservation;
     @OneToMany (cascade = CascadeType.ALL, mappedBy="contrat")
+    @JsonManagedReference("contrat-paiements")
     private Set<Paiement> paiements;
 }

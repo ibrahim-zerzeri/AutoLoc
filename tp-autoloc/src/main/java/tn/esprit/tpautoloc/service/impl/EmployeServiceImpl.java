@@ -17,7 +17,13 @@ public class EmployeServiceImpl implements IEmployeService {
     public Employe create(Employe employe) {
         if (employe.getIdEmploye() != null) {
             throw new IllegalArgumentException(
-                    "Un nouveau employe ne doit pas avoir d'identifiant");
+                    "Un nouvel employé ne doit pas avoir d'identifiant");
+        }
+        if (employe.getNom() == null || employe.getNom().trim().isEmpty()) {
+            throw new IllegalArgumentException("Le nom de l'employé est obligatoire");
+        }
+        if (employe.getPrenom() == null || employe.getPrenom().trim().isEmpty()) {
+            throw new IllegalArgumentException("Le prénom de l'employé est obligatoire");
         }
         return employeRepository.save(employe);
     }
@@ -33,9 +39,24 @@ public class EmployeServiceImpl implements IEmployeService {
     @Override
     public Employe update(Long id, Employe employe) {
         Employe existant = findById(id);
-        existant.setRole(employe.getRole());
-// recopier ici les autres attributs modifiables du employe (Atelier 2),
-// sans toucher à l'identifiant ni à la collection de paiements
+        if (employe.getNom() != null) {
+            if (employe.getNom().trim().isEmpty()) {
+                throw new IllegalArgumentException("Le nom de l'employé ne peut pas être vide");
+            }
+            existant.setNom(employe.getNom());
+        }
+        if (employe.getPrenom() != null) {
+            if (employe.getPrenom().trim().isEmpty()) {
+                throw new IllegalArgumentException("Le prénom de l'employé ne peut pas être vide");
+            }
+            existant.setPrenom(employe.getPrenom());
+        }
+        if (employe.getRole() != null) {
+            existant.setRole(employe.getRole());
+        }
+        if (employe.getAgence() != null) {
+            existant.setAgence(employe.getAgence());
+        }
         return employeRepository.save(existant);
     }
     @Override

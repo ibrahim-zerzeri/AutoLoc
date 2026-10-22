@@ -17,7 +17,10 @@ public class EquipementServiceImpl implements IEquipementService {
     public Equipement create(Equipement equipement) {
         if (equipement.getIdEquipement() != null) {
             throw new IllegalArgumentException(
-                    "Un nouveau equipement ne doit pas avoir d'identifiant");
+                    "Un nouvel équipement ne doit pas avoir d'identifiant");
+        }
+        if (equipement.getLibelle() == null || equipement.getLibelle().trim().isEmpty()) {
+            throw new IllegalArgumentException("Le libellé de l'équipement est obligatoire");
         }
         return equipementRepository.save(equipement);
     }
@@ -33,9 +36,12 @@ public class EquipementServiceImpl implements IEquipementService {
     @Override
     public Equipement update(Long id, Equipement equipement) {
         Equipement existant = findById(id);
-        existant.setLibelle(equipement.getLibelle());
-// recopier ici les autres attributs modifiables du equipement (Atelier 2),
-// sans toucher à l'identifiant ni à la collection de paiements
+        if (equipement.getLibelle() != null) {
+            if (equipement.getLibelle().trim().isEmpty()) {
+                throw new IllegalArgumentException("Le libellé de l'équipement ne peut pas être vide");
+            }
+            existant.setLibelle(equipement.getLibelle());
+        }
         return equipementRepository.save(existant);
     }
     @Override
