@@ -7,9 +7,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.tpautoloc.domain.Vehicule;
 import tn.esprit.tpautoloc.service.IVehiculeService;
+import tn.esprit.tpautoloc.service.impl.VehiculeServiceImpl;
 
 import java.util.List;
 
@@ -71,5 +73,15 @@ public class VehiculeController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@Parameter(description = "Identifiant du véhicule") @PathVariable Long id) {
         vehiculeService.deleteById(id);
+    }
+    @PutMapping("/affecterVehicule/{agenceId}/{vehiculeId}")
+    public ResponseEntity<Void> affecterVehiculeAgence  (@PathVariable Long vehiculeId,@PathVariable Long agenceId){
+        vehiculeService.affecterVehiculeAAgence(vehiculeId,agenceId);
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping("/desaffecterVehiculeDeAgence/{vehiculeId}")
+    public ResponseEntity<Void> desaffecterVehiculeDeAgence  (@PathVariable Long vehiculeId){
+        vehiculeService.desaffecterVehiculeDeAgence(vehiculeId);
+        return ResponseEntity.noContent().build();
     }
 }

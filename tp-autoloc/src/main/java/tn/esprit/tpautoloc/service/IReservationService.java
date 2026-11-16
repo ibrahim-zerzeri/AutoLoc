@@ -1,5 +1,6 @@
 package tn.esprit.tpautoloc.service;
 
+import tn.esprit.tpautoloc.domain.Client;
 import tn.esprit.tpautoloc.domain.Reservation;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface IReservationService {
     default Reservation save(Reservation reservation) {
         return create(reservation);
     }
+    Reservation creerReservation(Client client);
+    Reservation annulerReservation(Reservation reservation);
 }

@@ -15,4 +15,6 @@ public interface IVehiculeService {
     default Vehicule save(Vehicule vehicule) {
         return create(vehicule);
     }
+    void affecterVehiculeAAgence(Long vehiculeId, Long agenceId);
+    void desaffecterVehiculeDeAgence(Long vehiculeId);
 }

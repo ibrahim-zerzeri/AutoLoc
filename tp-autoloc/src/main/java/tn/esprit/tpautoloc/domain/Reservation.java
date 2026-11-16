@@ -2,6 +2,7 @@ package tn.esprit.tpautoloc.domain;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,4 +32,36 @@ public class Reservation {
     private Client client;
     @ManyToOne
     private Vehicule vehicule;
+
+    public Long getId() {
+        return idReservation;
+    }
+
+    public void setId(Long id) {
+        this.idReservation = id;
+    }
+
+    public void setStatut(String statutStr) {
+        if (statutStr != null) {
+            this.statut = StatutReservation.valueOf(statutStr);
+        }
+    }
+
+    public void setStatut(StatutReservation statut) {
+        this.statut = statut;
+    }
+
+    public static class ReservationBuilder {
+        public ReservationBuilder statut(String statutStr) {
+            if (statutStr != null) {
+                this.statut = StatutReservation.valueOf(statutStr);
+            }
+            return this;
+        }
+
+        public ReservationBuilder statut(StatutReservation statut) {
+            this.statut = statut;
+            return this;
+        }
+    }
 }

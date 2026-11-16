@@ -1,19 +1,25 @@
 package tn.esprit.tpautoloc.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tn.esprit.tpautoloc.domain.Client;
 import tn.esprit.tpautoloc.domain.Reservation;
+import tn.esprit.tpautoloc.domain.enums.StatutReservation;
 import tn.esprit.tpautoloc.exception.ResourceNotFoundException;
 import tn.esprit.tpautoloc.repository.IReservationRepository;
-
 import tn.esprit.tpautoloc.service.IReservationService;
+import tn.esprit.tpautoloc.service.observer.ReservationSubject;
 
+import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements IReservationService {
     private final IReservationRepository reservationRepository;
+    private final ReservationSubject reservationSubject;
     @Override
     public Reservation create(Reservation reservation) {
         if (reservation.getIdReservation() != null) {
@@ -76,5 +82,26 @@ public class ReservationServiceImpl implements IReservationService {
     @Override
     public boolean existsById(Long id) {
         return reservationRepository.existsById(id);
+    }
+
+    @Override
+    public Reservation creerReservation(Client client) {
+        Reservation reservation = Reservation.builder()
+                .client(client)
+                .dateDebut(LocalDate.now())
+                .statut(StatutReservation.CONFIRMEE.name())
+                .build();
+        reservationSubject.notifierConfirmation(reservation);
+        return reservation;
+    }
+
+    @Override
+    public Reservation annulerReservation(Reservation reservation) {
+        reservation.setStatut(StatutReservation.ANNULEE.name());
+        String email = (reservation.getClient() != null) ? reservation.getClient().getEmail() : "inconnu";
+        log.info("Reservation #{} annulée pour le client {}",
+                reservation.getId(), email);
+        reservationSubject.notifierAnnulation(reservation);
+        return reservation;
     }
 }
