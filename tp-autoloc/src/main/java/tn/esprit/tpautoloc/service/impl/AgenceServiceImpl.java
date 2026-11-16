@@ -2,11 +2,13 @@ package tn.esprit.tpautoloc.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.tpautoloc.domain.Agence;
 import tn.esprit.tpautoloc.exception.ResourceNotFoundException;
 import tn.esprit.tpautoloc.repository.IAgenceRepository;
 import tn.esprit.tpautoloc.service.IAgenceService;
-
+import tn.esprit.tpautoloc.web.dto.AgenceDTO;
+import tn.esprit.tpautoloc.web.mapper.AgenceMapper;
 
 import java.util.List;
 
@@ -14,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AgenceServiceImpl implements IAgenceService {
     private final IAgenceRepository agenceRepository;
+    private final AgenceMapper agenceMapper;
     @Override
     public Agence create(Agence agence) {
         if (agence.getIdAgence() != null) {
@@ -74,5 +77,43 @@ public class AgenceServiceImpl implements IAgenceService {
     @Override
     public boolean existsById(Long id) {
         return agenceRepository.existsById(id);
+    }
+
+    @Override
+    @Transactional
+    public AgenceDTO creer(AgenceDTO dto) {
+        Agence agence = agenceMapper.toEntity(dto);
+        agence.setIdAgence(null);
+        Agence saved = agenceRepository.save(agence);
+        return agenceMapper.toDto(saved);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AgenceDTO obtenirParId(Long id) {
+        Agence agence = agenceRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable, id=" + id));
+        return agenceMapper.toDto(agence);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AgenceDTO> listerToutes() {
+        return agenceRepository.findAll().stream()
+                .map(agenceMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public AgenceDTO update(Long id, AgenceDTO dto) {
+        Agence existant = agenceRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable, id=" + id));
+        if (dto.getNom() != null) existant.setNom(dto.getNom());
+        if (dto.getVille() != null) existant.setVille(dto.getVille());
+        if (dto.getAdresse() != null) existant.setAdresse(dto.getAdresse());
+        if (dto.getTelephone() != null) existant.setTelephone(dto.getTelephone());
+        Agence saved = agenceRepository.save(existant);
+        return agenceMapper.toDto(saved);
     }
 }

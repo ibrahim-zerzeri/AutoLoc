@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.tpautoloc.domain.Employe;
 import tn.esprit.tpautoloc.service.IEmployeService;
@@ -71,5 +72,21 @@ public class EmployeController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@Parameter(description = "Identifiant de l'employé") @PathVariable Long id) {
         employeService.deleteById(id);
+    }
+
+    @Operation(summary = "Affecter un employé à une agence")
+    @PutMapping("/affecterEmploye/{agenceId}/{employeId}")
+    public ResponseEntity<Void> affecterEmployeAAgence(
+            @PathVariable Long employeId,
+            @PathVariable Long agenceId) {
+        employeService.affecterEmployeAAgence(employeId, agenceId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Désaffecter un employé de son agence")
+    @PutMapping("/desaffecterEmployeDeAgence/{employeId}")
+    public ResponseEntity<Void> desaffecterEmployeDeAgence(@PathVariable Long employeId) {
+        employeService.desaffecterEmployeDeAgence(employeId);
+        return ResponseEntity.noContent().build();
     }
 }

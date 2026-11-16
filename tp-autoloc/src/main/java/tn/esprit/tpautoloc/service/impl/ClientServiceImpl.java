@@ -2,10 +2,13 @@ package tn.esprit.tpautoloc.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.tpautoloc.domain.Client;
 import tn.esprit.tpautoloc.exception.ResourceNotFoundException;
 import tn.esprit.tpautoloc.repository.IClientRepository;
 import tn.esprit.tpautoloc.service.IClientService;
+import tn.esprit.tpautoloc.web.dto.ClientDTO;
+import tn.esprit.tpautoloc.web.mapper.ClientMapper;
 
 import java.util.List;
 
@@ -13,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClientServiceImpl implements IClientService {
     private final IClientRepository clientRepository;
+    private final ClientMapper clientMapper;
     @Override
     public Client create(Client client) {
         if (client.getIdClient() != null) {
@@ -74,5 +78,44 @@ public class ClientServiceImpl implements IClientService {
     @Override
     public boolean existsById(Long id) {
         return clientRepository.existsById(id);
+    }
+
+    @Override
+    @Transactional
+    public ClientDTO creer(ClientDTO dto) {
+        Client client = clientMapper.toEntity(dto);
+        client.setIdClient(null);
+        Client saved = clientRepository.save(client);
+        return clientMapper.toDto(saved);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ClientDTO obtenirParId(Long id) {
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Client introuvable, id=" + id));
+        return clientMapper.toDto(client);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ClientDTO> listerToutes() {
+        return clientRepository.findAll().stream()
+                .map(clientMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public ClientDTO update(Long id, ClientDTO dto) {
+        Client existant = clientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Client introuvable, id=" + id));
+        if (dto.getNom() != null) existant.setNom(dto.getNom());
+        if (dto.getPrenom() != null) existant.setPrenom(dto.getPrenom());
+        if (dto.getEmail() != null) existant.setEmail(dto.getEmail());
+        if (dto.getTelephone() != null) existant.setTelephone(dto.getTelephone());
+        if (dto.getNumPermis() != null) existant.setNumPermis(dto.getNumPermis());
+        Client saved = clientRepository.save(existant);
+        return clientMapper.toDto(saved);
     }
 }

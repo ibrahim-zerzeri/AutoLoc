@@ -2,6 +2,8 @@ package tn.esprit.tpautoloc.service;
 
 import tn.esprit.tpautoloc.domain.Client;
 import tn.esprit.tpautoloc.domain.Reservation;
+import tn.esprit.tpautoloc.web.dto.ReservationRequestDTO;
+import tn.esprit.tpautoloc.web.dto.ReservationResponseDTO;
 
 import java.util.List;
 
@@ -18,4 +20,9 @@ public interface IReservationService {
     }
     Reservation creerReservation(Client client);
     Reservation annulerReservation(Reservation reservation);
+
+    // Méthodes DTO (Atelier 7)
+    ReservationResponseDTO creer(ReservationRequestDTO dto);
+    ReservationResponseDTO obtenirParId(Long id);
+    List<ReservationResponseDTO> listerToutes();
 }

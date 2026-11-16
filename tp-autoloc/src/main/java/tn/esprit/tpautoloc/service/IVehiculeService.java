@@ -1,6 +1,7 @@
 package tn.esprit.tpautoloc.service;
 
 import tn.esprit.tpautoloc.domain.Vehicule;
+import tn.esprit.tpautoloc.web.dto.VehiculeDTO;
 
 import java.util.List;
 
@@ -17,4 +18,10 @@ public interface IVehiculeService {
     }
     void affecterVehiculeAAgence(Long vehiculeId, Long agenceId);
     void desaffecterVehiculeDeAgence(Long vehiculeId);
+
+    // Méthodes DTO (Atelier 7)
+    VehiculeDTO creer(VehiculeDTO dto);
+    VehiculeDTO obtenirParId(Long id);
+    List<VehiculeDTO> listerToutes();
+    VehiculeDTO update(Long id, VehiculeDTO dto);
 }

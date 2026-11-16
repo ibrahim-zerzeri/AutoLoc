@@ -31,4 +31,18 @@ public class GlobalExceptionHandler {
                 "horodatage", LocalDateTime.now().toString()
         );
     }
+
+    @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleValidation(org.springframework.web.bind.MethodArgumentNotValidException ex) {
+        var erreurs = ex.getBindingResult().getFieldErrors().stream()
+                .map(err -> err.getField() + " : " + err.getDefaultMessage())
+                .toList();
+        return Map.of(
+                "statut", 400,
+                "message", "Erreur de validation des données",
+                "erreurs", erreurs,
+                "horodatage", LocalDateTime.now().toString()
+        );
+    }
 }

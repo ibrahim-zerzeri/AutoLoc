@@ -15,4 +15,6 @@ public interface IEmployeService {
     default Employe save(Employe employe) {
         return create(employe);
     }
+    void affecterEmployeAAgence(Long employeId, Long agenceId);
+    void desaffecterEmployeDeAgence(Long employeId);
 }

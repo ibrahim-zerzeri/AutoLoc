@@ -9,6 +9,8 @@ import tn.esprit.tpautoloc.exception.ResourceNotFoundException;
 import tn.esprit.tpautoloc.repository.IAgenceRepository;
 import tn.esprit.tpautoloc.repository.IVehiculeRepository;
 import tn.esprit.tpautoloc.service.IVehiculeService;
+import tn.esprit.tpautoloc.web.dto.VehiculeDTO;
+import tn.esprit.tpautoloc.web.mapper.VehiculeMapper;
 
 import java.util.List;
 
@@ -17,6 +19,7 @@ import java.util.List;
 public class VehiculeServiceImpl implements IVehiculeService {
     private final IVehiculeRepository vehiculeRepository;
     private final IAgenceRepository agenceRepository;
+    private final VehiculeMapper vehiculeMapper;
     @Override
     public Vehicule create(Vehicule vehicule) {
         if (vehicule.getIdVehicule() != null) {
@@ -96,5 +99,55 @@ public class VehiculeServiceImpl implements IVehiculeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Véhicule introuvable",vehiculeId));
         vehicule.setAgence(null);
         vehiculeRepository.save(vehicule);
+    }
+
+    @Override
+    @Transactional
+    public VehiculeDTO creer(VehiculeDTO dto) {
+        Vehicule vehicule = vehiculeMapper.toEntity(dto);
+        vehicule.setIdVehicule(null);
+        if (dto.getAgenceId() != null) {
+            Agence agence = agenceRepository.findById(dto.getAgenceId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable", dto.getAgenceId()));
+            vehicule.setAgence(agence);
+        }
+        Vehicule saved = vehiculeRepository.save(vehicule);
+        return vehiculeMapper.toDto(saved);
+    }
+
+    @Override
+    @Transactional
+    public VehiculeDTO obtenirParId(Long id) {
+        Vehicule vehicule = vehiculeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Véhicule introuvable, id=" + id));
+        return vehiculeMapper.toDto(vehicule);
+    }
+
+    @Override
+    @Transactional
+    public List<VehiculeDTO> listerToutes() {
+        return vehiculeRepository.findAll().stream()
+                .map(vehiculeMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public VehiculeDTO update(Long id, VehiculeDTO dto) {
+        Vehicule existant = vehiculeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Véhicule introuvable, id=" + id));
+        if (dto.getImmatriculation() != null) existant.setImmatriculation(dto.getImmatriculation());
+        if (dto.getMarque() != null) existant.setMarque(dto.getMarque());
+        if (dto.getModele() != null) existant.setModele(dto.getModele());
+        if (dto.getCategorie() != null) existant.setCategorie(dto.getCategorie());
+        if (dto.getTarifJournalier() != null) existant.setTarifJournalier(dto.getTarifJournalier());
+        if (dto.getStatut() != null) existant.setStatut(dto.getStatut());
+        if (dto.getAgenceId() != null) {
+            Agence agence = agenceRepository.findById(dto.getAgenceId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable", dto.getAgenceId()));
+            existant.setAgence(agence);
+        }
+        Vehicule saved = vehiculeRepository.save(existant);
+        return vehiculeMapper.toDto(saved);
     }
 }

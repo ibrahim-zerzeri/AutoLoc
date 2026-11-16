@@ -1,6 +1,7 @@
 package tn.esprit.tpautoloc.service;
 
 import tn.esprit.tpautoloc.domain.Paiement;
+import tn.esprit.tpautoloc.web.dto.PaiementDTO;
 
 import java.util.List;
 
@@ -15,4 +16,9 @@ public interface IPaiementService {
     default Paiement save(Paiement paiement) {
         return create(paiement);
     }
+
+    // Méthodes DTO (Atelier 7)
+    PaiementDTO creer(PaiementDTO dto);
+    PaiementDTO obtenirParId(Long id);
+    List<PaiementDTO> listerToutes();
 }

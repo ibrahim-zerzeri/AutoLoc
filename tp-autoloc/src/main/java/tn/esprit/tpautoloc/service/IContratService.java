@@ -1,6 +1,7 @@
 package tn.esprit.tpautoloc.service;
 
 import tn.esprit.tpautoloc.domain.Contrat;
+import tn.esprit.tpautoloc.web.dto.ContratDTO;
 
 import java.util.List;
 
@@ -15,4 +16,10 @@ public interface IContratService {
     default Contrat save(Contrat contrat) {
         return create(contrat);
     }
+
+    // Méthodes DTO (Atelier 7)
+    ContratDTO creer(ContratDTO dto);
+    ContratDTO obtenirParId(Long id);
+    List<ContratDTO> listerToutes();
+    ContratDTO update(Long id, ContratDTO dto);
 }
