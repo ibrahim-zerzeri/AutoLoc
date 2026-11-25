@@ -1,8 +1,10 @@
 package tn.esprit.tpautoloc.service;
 
 import tn.esprit.tpautoloc.domain.Contrat;
+import tn.esprit.tpautoloc.web.dto.ChiffreAffaireAgenceDTO;
 import tn.esprit.tpautoloc.web.dto.ContratDTO;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface IContratService {
@@ -22,4 +24,8 @@ public interface IContratService {
     ContratDTO obtenirParId(Long id);
     List<ContratDTO> listerToutes();
     ContratDTO update(Long id, ContratDTO dto);
+
+    // Statistiques & Requêtes JPQL (Atelier 8)
+    List<ChiffreAffaireAgenceDTO> chiffreAffaireParAgence();
+    List<ContratDTO> trouverContratsAEcheanceProche(LocalDate aujourdhui, LocalDate dateLimite);
 }

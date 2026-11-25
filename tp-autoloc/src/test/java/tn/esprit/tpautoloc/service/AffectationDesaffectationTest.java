@@ -60,7 +60,7 @@ class AffectationDesaffectationTest {
         v.setImmatriculation("123-TN-456");
         v.setMarque("Renault");
         v.setModele("Clio");
-        v.setCategorie(CategorieVehicule.COMPACTE);
+        v.setCategorie(CategorieVehicule.BERLINE);
         v.setTarifJournalier(new BigDecimal("100.00"));
         v.setStatut(StatutVehicule.DISPONIBLE);
         vehicule = vehiculeRepository.save(v);

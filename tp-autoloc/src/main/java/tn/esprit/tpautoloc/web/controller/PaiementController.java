@@ -50,4 +50,10 @@ public class PaiementController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(paiementService.creer(dto));
     }
+
+    @Operation(summary = "Rechercher les paiements d'un contrat (Query Method)")
+    @GetMapping("/contrat/{contratId}")
+    public ResponseEntity<List<PaiementDTO>> findByContrat(@PathVariable Long contratId) {
+        return ResponseEntity.ok(paiementService.findByContratId(contratId));
+    }
 }

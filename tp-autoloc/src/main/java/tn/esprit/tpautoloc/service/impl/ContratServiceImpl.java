@@ -1,5 +1,6 @@
 package tn.esprit.tpautoloc.service.impl;
 
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import tn.esprit.tpautoloc.domain.Contrat;
 import tn.esprit.tpautoloc.exception.ResourceNotFoundException;
 import tn.esprit.tpautoloc.repository.IContratRepository;
 import tn.esprit.tpautoloc.service.IContratService;
+import tn.esprit.tpautoloc.web.dto.ChiffreAffaireAgenceDTO;
 import tn.esprit.tpautoloc.web.dto.ContratDTO;
 import tn.esprit.tpautoloc.web.mapper.ContratMapper;
 
@@ -83,7 +85,7 @@ public class ContratServiceImpl implements IContratService {
     @Transactional(readOnly = true)
     public ContratDTO obtenirParId(Long id) {
         Contrat contrat = contratRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Contrat introuvable, id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Contrat introuvable, id=" + id,id));
         return contratMapper.toDto(contrat);
     }
 
@@ -99,7 +101,7 @@ public class ContratServiceImpl implements IContratService {
     @Transactional
     public ContratDTO update(Long id, ContratDTO dto) {
         Contrat existant = contratRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Contrat introuvable, id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Contrat introuvable, id=" + id,id));
         if (dto.getMontantTotal() != null) {
             existant.setMontantTotal(dto.getMontantTotal());
         }
@@ -111,5 +113,19 @@ public class ContratServiceImpl implements IContratService {
         }
         Contrat saved = contratRepository.save(existant);
         return contratMapper.toDto(saved);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ChiffreAffaireAgenceDTO> chiffreAffaireParAgence() {
+        return contratRepository.chiffreAffaireParAgence();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ContratDTO> trouverContratsAEcheanceProche(LocalDate aujourdhui, LocalDate dateLimite) {
+        return contratRepository.trouverContratsAEcheanceProche(aujourdhui, dateLimite).stream()
+                .map(contratMapper::toDto)
+                .toList();
     }
 }

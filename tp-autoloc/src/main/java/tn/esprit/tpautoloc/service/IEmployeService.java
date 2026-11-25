@@ -1,6 +1,7 @@
 package tn.esprit.tpautoloc.service;
 
 import tn.esprit.tpautoloc.domain.Employe;
+import tn.esprit.tpautoloc.domain.enums.RoleEmploye;
 
 import java.util.List;
 
@@ -17,4 +18,7 @@ public interface IEmployeService {
     }
     void affecterEmployeAAgence(Long employeId, Long agenceId);
     void desaffecterEmployeDeAgence(Long employeId);
+
+    // Recherches Query Methods (Atelier 8)
+    List<Employe> findByAgenceIdAndRole(Long agenceId, RoleEmploye role);
 }

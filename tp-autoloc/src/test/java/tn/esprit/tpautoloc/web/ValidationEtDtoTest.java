@@ -55,7 +55,7 @@ class ValidationEtDtoTest {
                 .immatriculation("  ") // vide
                 .marque("Peugeot")
                 .modele("208")
-                .categorie(CategorieVehicule.COMPACTE)
+                .categorie(CategorieVehicule.BERLINE)
                 .tarifJournalier(new BigDecimal("90.00"))
                 .build();
 
@@ -68,7 +68,7 @@ class ValidationEtDtoTest {
     void testPaiementMontantNulOuNegatifDoitEtreRejete() {
         PaiementDTO dtoZero = PaiementDTO.builder()
                 .montant(BigDecimal.ZERO)
-                .modePaiement(ModelPaiement.CARTE_BANCAIRE)
+                .modePaiement(ModelPaiement.CARTE)
                 .contratId(1L)
                 .build();
 
@@ -78,7 +78,7 @@ class ValidationEtDtoTest {
 
         PaiementDTO dtoNegatif = PaiementDTO.builder()
                 .montant(new BigDecimal("-50.00"))
-                .modePaiement(ModelPaiement.CARTE_BANCAIRE)
+                .modePaiement(ModelPaiement.CARTE)
                 .contratId(1L)
                 .build();
 

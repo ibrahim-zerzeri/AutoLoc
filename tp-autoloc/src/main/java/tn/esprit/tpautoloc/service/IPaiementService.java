@@ -21,4 +21,7 @@ public interface IPaiementService {
     PaiementDTO creer(PaiementDTO dto);
     PaiementDTO obtenirParId(Long id);
     List<PaiementDTO> listerToutes();
+
+    // Recherches Query Methods (Atelier 8)
+    List<PaiementDTO> findByContratId(Long contratId);
 }

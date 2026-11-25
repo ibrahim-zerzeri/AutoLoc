@@ -2,9 +2,13 @@ package tn.esprit.tpautoloc.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import tn.esprit.tpautoloc.domain.Agence;
 import tn.esprit.tpautoloc.domain.Vehicule;
+import tn.esprit.tpautoloc.domain.enums.CategorieVehicule;
+import tn.esprit.tpautoloc.domain.enums.StatutVehicule;
 import tn.esprit.tpautoloc.exception.ResourceNotFoundException;
 import tn.esprit.tpautoloc.repository.IAgenceRepository;
 import tn.esprit.tpautoloc.repository.IVehiculeRepository;
@@ -12,6 +16,7 @@ import tn.esprit.tpautoloc.service.IVehiculeService;
 import tn.esprit.tpautoloc.web.dto.VehiculeDTO;
 import tn.esprit.tpautoloc.web.mapper.VehiculeMapper;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -119,7 +124,7 @@ public class VehiculeServiceImpl implements IVehiculeService {
     @Transactional
     public VehiculeDTO obtenirParId(Long id) {
         Vehicule vehicule = vehiculeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Véhicule introuvable, id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Véhicule introuvable, id=" + id,id));
         return vehiculeMapper.toDto(vehicule);
     }
 
@@ -135,7 +140,7 @@ public class VehiculeServiceImpl implements IVehiculeService {
     @Transactional
     public VehiculeDTO update(Long id, VehiculeDTO dto) {
         Vehicule existant = vehiculeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Véhicule introuvable, id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Véhicule introuvable, id=" + id,id));
         if (dto.getImmatriculation() != null) existant.setImmatriculation(dto.getImmatriculation());
         if (dto.getMarque() != null) existant.setMarque(dto.getMarque());
         if (dto.getModele() != null) existant.setModele(dto.getModele());
@@ -149,5 +154,44 @@ public class VehiculeServiceImpl implements IVehiculeService {
         }
         Vehicule saved = vehiculeRepository.save(existant);
         return vehiculeMapper.toDto(saved);
+    }
+
+    @Override
+    @Transactional
+    public List<VehiculeDTO> findByAgenceVille(String ville) {
+        return vehiculeRepository.findByAgenceVille(ville).stream()
+                .map(vehiculeMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public Page<VehiculeDTO> findByStatut(StatutVehicule statut, Pageable pageable) {
+        return vehiculeRepository.findByStatut(statut, pageable)
+                .map(vehiculeMapper::toDto);
+    }
+
+    @Override
+    @Transactional
+    public List<VehiculeDTO> findByAgenceVilleAndCategorie(String ville, CategorieVehicule categorie) {
+        return vehiculeRepository.findByAgence_VilleAndCategorie(ville, categorie).stream()
+                .map(vehiculeMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public List<VehiculeDTO> rechercherVehiculesDisponibles(String ville, CategorieVehicule categorie, LocalDate dateDebut, LocalDate dateFin) {
+        return vehiculeRepository.rechercherVehiculesDisponibles(ville, categorie, dateDebut, dateFin).stream()
+                .map(vehiculeMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public List<VehiculeDTO> trouverVehiculesAReleaser(LocalDate aujourdhui) {
+        return vehiculeRepository.trouverVehiculesAReleaser(aujourdhui).stream()
+                .map(vehiculeMapper::toDto)
+                .toList();
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.tpautoloc.domain.Employe;
+import tn.esprit.tpautoloc.domain.enums.RoleEmploye;
 import tn.esprit.tpautoloc.service.IEmployeService;
 
 import java.util.List;
@@ -88,5 +89,13 @@ public class EmployeController {
     public ResponseEntity<Void> desaffecterEmployeDeAgence(@PathVariable Long employeId) {
         employeService.desaffecterEmployeDeAgence(employeId);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Recherche d'employés par agence et rôle (Query Method)")
+    @GetMapping("/recherche")
+    public ResponseEntity<List<Employe>> findByAgenceEtRole(
+            @RequestParam Long agenceId,
+            @RequestParam RoleEmploye role) {
+        return ResponseEntity.ok(employeService.findByAgenceIdAndRole(agenceId, role));
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import tn.esprit.tpautoloc.service.IContratService;
 import tn.esprit.tpautoloc.web.dto.ContratDTO;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -73,5 +74,14 @@ public class ContratController {
     public ResponseEntity<Void> deleteById(@Parameter(description = "Identifiant du contrat") @PathVariable Long id) {
         contratService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Contrats arrivant à échéance sous un délai donné (JPQL Exercice 9.2)")
+    @GetMapping("/echeance-proche")
+    public ResponseEntity<List<ContratDTO>> trouverContratsAEcheanceProche(
+            @RequestParam(defaultValue = "30") int jours) {
+        LocalDate aujourdhui = LocalDate.now();
+        LocalDate limite = aujourdhui.plusDays(jours);
+        return ResponseEntity.ok(contratService.trouverContratsAEcheanceProche(aujourdhui, limite));
     }
 }

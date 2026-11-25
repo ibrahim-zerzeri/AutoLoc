@@ -22,4 +22,8 @@ public interface IClientService {
     ClientDTO obtenirParId(Long id);
     List<ClientDTO> listerToutes();
     ClientDTO update(Long id, ClientDTO dto);
+
+    // Recherches Query Methods (Atelier 8)
+    ClientDTO findByEmail(String email);
+    List<ClientDTO> findByNomContaining(String nom);
 }

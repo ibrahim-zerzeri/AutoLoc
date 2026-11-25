@@ -79,7 +79,7 @@ public class PaiementServiceImpl implements IPaiementService {
     @Transactional(readOnly = true)
     public PaiementDTO obtenirParId(Long id) {
         Paiement paiement = paiementRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Paiement introuvable, id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Paiement introuvable, id=" + id,id));
         return paiementMapper.toDto(paiement);
     }
 
@@ -87,6 +87,14 @@ public class PaiementServiceImpl implements IPaiementService {
     @Transactional(readOnly = true)
     public List<PaiementDTO> listerToutes() {
         return paiementRepository.findAll().stream()
+                .map(paiementMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PaiementDTO> findByContratId(Long contratId) {
+        return paiementRepository.findByContrat_Id(contratId).stream()
                 .map(paiementMapper::toDto)
                 .toList();
     }

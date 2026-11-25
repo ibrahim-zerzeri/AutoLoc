@@ -34,5 +34,6 @@ public class VehiculeDTO {
     private BigDecimal tarifJournalier;
 
     private StatutVehicule statut;
+    @NotNull
     private Long agenceId;
 }

@@ -93,7 +93,7 @@ public class ClientServiceImpl implements IClientService {
     @Transactional(readOnly = true)
     public ClientDTO obtenirParId(Long id) {
         Client client = clientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Client introuvable, id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Client introuvable, id=" + id,id));
         return clientMapper.toDto(client);
     }
 
@@ -109,7 +109,7 @@ public class ClientServiceImpl implements IClientService {
     @Transactional
     public ClientDTO update(Long id, ClientDTO dto) {
         Client existant = clientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Client introuvable, id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Client introuvable, id=" + id,id));
         if (dto.getNom() != null) existant.setNom(dto.getNom());
         if (dto.getPrenom() != null) existant.setPrenom(dto.getPrenom());
         if (dto.getEmail() != null) existant.setEmail(dto.getEmail());
@@ -117,5 +117,21 @@ public class ClientServiceImpl implements IClientService {
         if (dto.getNumPermis() != null) existant.setNumPermis(dto.getNumPermis());
         Client saved = clientRepository.save(existant);
         return clientMapper.toDto(saved);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ClientDTO findByEmail(String email) {
+        Client client = clientRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Client introuvable avec email : " + email, (Long) null));
+        return clientMapper.toDto(client);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ClientDTO> findByNomContaining(String nom) {
+        return clientRepository.findByNomContaining(nom).stream()
+                .map(clientMapper::toDto)
+                .toList();
     }
 }

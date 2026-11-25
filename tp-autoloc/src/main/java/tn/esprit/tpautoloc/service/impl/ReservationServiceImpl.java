@@ -2,6 +2,7 @@ package tn.esprit.tpautoloc.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.tpautoloc.domain.Client;
@@ -17,6 +18,7 @@ import tn.esprit.tpautoloc.service.factory.TarificationStrategyFactory;
 import tn.esprit.tpautoloc.service.observer.ReservationSubject;
 import tn.esprit.tpautoloc.web.dto.ReservationRequestDTO;
 import tn.esprit.tpautoloc.web.dto.ReservationResponseDTO;
+import tn.esprit.tpautoloc.web.dto.TopClientDTO;
 import tn.esprit.tpautoloc.web.mapper.ReservationMapper;
 
 import java.time.LocalDate;
@@ -121,9 +123,9 @@ public class ReservationServiceImpl implements IReservationService {
     @Transactional
     public ReservationResponseDTO creer(ReservationRequestDTO dto) {
         Client client = clientRepository.findById(dto.getClientId())
-                .orElseThrow(() -> new ResourceNotFoundException("Client introuvable, id=" + dto.getClientId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Client introuvable, id=" + dto.getClientId(),dto.getClientId()));
         Vehicule vehicule = vehiculeRepository.findById(dto.getVehiculeId())
-                .orElseThrow(() -> new ResourceNotFoundException("Véhicule introuvable, id=" + dto.getVehiculeId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Véhicule introuvable, id=" + dto.getVehiculeId(),dto.getVehiculeId()));
 
         Reservation reservation = new Reservation();
         reservation.setDateDebut(dto.getDateDebut());
@@ -149,7 +151,7 @@ public class ReservationServiceImpl implements IReservationService {
     @Transactional(readOnly = true)
     public ReservationResponseDTO obtenirParId(Long id) {
         Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Reservation introuvable, id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Reservation introuvable, id=" + id,id));
         ReservationResponseDTO response = reservationMapper.toDto(reservation);
         if (tarificationStrategyFactory != null && reservation.getVehicule() != null) {
             var strategy = tarificationStrategyFactory.resoudre(reservation);
@@ -175,5 +177,11 @@ public class ReservationServiceImpl implements IReservationService {
                     return dto;
                 })
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TopClientDTO> topClients(Pageable pageable) {
+        return reservationRepository.topClients(pageable);
     }
 }

@@ -98,4 +98,10 @@ public class EmployeServiceImpl implements IEmployeService {
         employe.setAgence(null);
         employeRepository.save(employe);
     }
+
+    @Override
+    @Transactional
+    public List<Employe> findByAgenceIdAndRole(Long agenceId, tn.esprit.tpautoloc.domain.enums.RoleEmploye role) {
+        return employeRepository.findByAgence_IdAndRole(agenceId, role);
+    }
 }

@@ -74,4 +74,16 @@ public class ClientController {
         clientService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Recherche d'un client par email (Query Method)")
+    @GetMapping("/recherche")
+    public ResponseEntity<ClientDTO> findByEmail(@RequestParam String email) {
+        return ResponseEntity.ok(clientService.findByEmail(email));
+    }
+
+    @Operation(summary = "Recherche de clients par nom contenant une chaîne (Query Method)")
+    @GetMapping("/recherche-nom")
+    public ResponseEntity<List<ClientDTO>> findByNom(@RequestParam String nom) {
+        return ResponseEntity.ok(clientService.findByNomContaining(nom));
+    }
 }

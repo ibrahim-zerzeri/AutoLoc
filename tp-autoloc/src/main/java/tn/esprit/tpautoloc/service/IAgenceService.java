@@ -22,4 +22,7 @@ public interface IAgenceService {
     AgenceDTO obtenirParId(Long id);
     List<AgenceDTO> listerToutes();
     AgenceDTO update(Long id, AgenceDTO dto);
+
+    // Recherches Query Methods (Atelier 8)
+    AgenceDTO findByVille(String ville);
 }

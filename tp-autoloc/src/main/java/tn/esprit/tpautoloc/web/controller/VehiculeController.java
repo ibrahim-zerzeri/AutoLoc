@@ -7,18 +7,24 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit.tpautoloc.domain.enums.CategorieVehicule;
+import tn.esprit.tpautoloc.domain.enums.StatutVehicule;
 import tn.esprit.tpautoloc.service.IVehiculeService;
 import tn.esprit.tpautoloc.web.dto.VehiculeDTO;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/vehicules")
+@RequestMapping({"/vehicules", "/jpql/vehicules"})
 @RequiredArgsConstructor
-@Tag(name = "Véhicules", description = "Gestion des véhicules")
+@Tag(name = "Véhicules", description = "Gestion des véhicules, recherches avancées et requêtes JPQL")
 public class VehiculeController {
 
     private final IVehiculeService vehiculeService;
@@ -89,5 +95,54 @@ public class VehiculeController {
     public ResponseEntity<Void> desaffecterVehiculeDeAgence(@PathVariable Long vehiculeId) {
         vehiculeService.desaffecterVehiculeDeAgence(vehiculeId);
         return ResponseEntity.noContent().build();
+    }
+
+    // ==========================================
+    // Atelier 8 - Recherche par Query Methods (Partie I)
+    // ==========================================
+
+    @Operation(summary = "Recherche de véhicules par ville d'agence (Query Method)")
+    @GetMapping("/ville")
+    public ResponseEntity<List<VehiculeDTO>> findByAgenceVille(@RequestParam String ville) {
+        return ResponseEntity.ok(vehiculeService.findByAgenceVille(ville));
+    }
+
+    @Operation(summary = "Recherche de véhicules par statut avec pagination (Query Method)")
+    @GetMapping({"/statut", "/recherche/statut"})
+    public ResponseEntity<Page<VehiculeDTO>> findByStatut(
+            @RequestParam StatutVehicule statut,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        return ResponseEntity.ok(vehiculeService.findByStatut(statut, PageRequest.of(page, size)));
+    }
+
+    @Operation(summary = "Recherche de véhicules par ville et catégorie")
+    @GetMapping("/recherche")
+    public ResponseEntity<List<VehiculeDTO>> findByAgenceVilleAndCategorie(
+            @RequestParam String ville,
+            @RequestParam CategorieVehicule categorie) {
+        return ResponseEntity.ok(vehiculeService.findByAgenceVilleAndCategorie(ville, categorie));
+    }
+
+    // ==========================================
+    // Atelier 8 - Recherches personnalisées JPQL (Partie II)
+    // ==========================================
+
+    @Operation(summary = "Recherche de véhicules disponibles par ville, catégorie et période (JPQL)")
+    @GetMapping("/disponibles")
+    public ResponseEntity<List<VehiculeDTO>> rechercherDisponibles(
+            @RequestParam String ville,
+            @RequestParam CategorieVehicule categorie,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDebut,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFin) {
+        return ResponseEntity.ok(vehiculeService.rechercherVehiculesDisponibles(ville, categorie, dateDebut, dateFin));
+    }
+
+    @Operation(summary = "Véhicules dont la réservation se termine à la date donnée (JPQL)")
+    @GetMapping("/a-releaser")
+    public ResponseEntity<List<VehiculeDTO>> trouverVehiculesAReleaser(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        LocalDate cible = (date != null) ? date : LocalDate.now();
+        return ResponseEntity.ok(vehiculeService.trouverVehiculesAReleaser(cible));
     }
 }

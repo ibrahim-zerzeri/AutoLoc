@@ -1,5 +1,7 @@
 package tn.esprit.tpautoloc.web.dto;
 
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -19,8 +21,10 @@ public class ReservationRequestDTO {
     private Long vehiculeId;
 
     @NotNull(message = "La date de début est obligatoire")
+    @FutureOrPresent
     private LocalDate dateDebut;
 
     @NotNull(message = "La date de fin est obligatoire")
+    @Future
     private LocalDate dateFin;
 }

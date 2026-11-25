@@ -74,4 +74,10 @@ public class AgenceController {
         agenceService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Recherche d'une agence par ville (Query Method)")
+    @GetMapping("/ville")
+    public ResponseEntity<AgenceDTO> findByVille(@RequestParam String ville) {
+        return ResponseEntity.ok(agenceService.findByVille(ville));
+    }
 }

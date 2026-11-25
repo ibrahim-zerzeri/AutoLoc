@@ -92,7 +92,7 @@ public class AgenceServiceImpl implements IAgenceService {
     @Transactional(readOnly = true)
     public AgenceDTO obtenirParId(Long id) {
         Agence agence = agenceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable, id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable, id=" + id,id));
         return agenceMapper.toDto(agence);
     }
 
@@ -108,12 +108,20 @@ public class AgenceServiceImpl implements IAgenceService {
     @Transactional
     public AgenceDTO update(Long id, AgenceDTO dto) {
         Agence existant = agenceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable, id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable, id=" + id,id));
         if (dto.getNom() != null) existant.setNom(dto.getNom());
         if (dto.getVille() != null) existant.setVille(dto.getVille());
         if (dto.getAdresse() != null) existant.setAdresse(dto.getAdresse());
         if (dto.getTelephone() != null) existant.setTelephone(dto.getTelephone());
         Agence saved = agenceRepository.save(existant);
         return agenceMapper.toDto(saved);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AgenceDTO findByVille(String ville) {
+        Agence agence = agenceRepository.findByVille(ville)
+                .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable dans la ville : " + ville, (Long) null));
+        return agenceMapper.toDto(agence);
     }
 }
