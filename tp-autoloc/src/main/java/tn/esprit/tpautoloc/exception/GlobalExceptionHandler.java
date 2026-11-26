@@ -1,12 +1,13 @@
-package tn.esprit.tpautoloc.web.controller;
+package tn.esprit.tpautoloc.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import tn.esprit.tpautoloc.exception.ResourceNotFoundException;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestControllerAdvice
@@ -32,17 +33,12 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, Object> handleValidation(org.springframework.web.bind.MethodArgumentNotValidException ex) {
-        var erreurs = ex.getBindingResult().getFieldErrors().stream()
-                .map(err -> err.getField() + " : " + err.getDefaultMessage())
-                .toList();
-        return Map.of(
-                "statut", 400,
-                "message", "Erreur de validation des données",
-                "erreurs", erreurs,
-                "horodatage", LocalDateTime.now().toString()
-        );
+    public Map<String, String> handleValidation(MethodArgumentNotValidException ex) {
+        Map<String, String> erreurs = new LinkedHashMap<>();
+        ex.getBindingResult().getFieldErrors()
+                .forEach(err -> erreurs.putIfAbsent(err.getField(), err.getDefaultMessage()));
+        return erreurs;
     }
 }

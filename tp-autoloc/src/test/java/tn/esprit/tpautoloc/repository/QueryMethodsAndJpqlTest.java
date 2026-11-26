@@ -94,7 +94,7 @@ class QueryMethodsAndJpqlTest {
         clio.setImmatriculation("200-TN-1111");
         clio.setMarque("Renault");
         clio.setModele("Clio");
-        clio.setCategorie(CategorieVehicule.ECONOMIQUE);
+        clio.setCategorie(CategorieVehicule.CITADINE);
         clio.setTarifJournalier(new BigDecimal("80.00"));
         clio.setStatut(StatutVehicule.DISPONIBLE);
         clio.setAgence(agenceTunis);
@@ -217,7 +217,7 @@ class QueryMethodsAndJpqlTest {
         LocalDate fin = LocalDate.now().plusDays(12);
 
         List<Vehicule> dispos = vehiculeRepository.rechercherVehiculesDisponibles(
-                "Tunis", CategorieVehicule.ECONOMIQUE, debut, fin);
+                "Tunis", CategorieVehicule.BERLINE, debut, fin);
 
         assertThat(dispos).extracting(Vehicule::getIdVehicule).contains(clio.getIdVehicule());
     }
@@ -230,7 +230,7 @@ class QueryMethodsAndJpqlTest {
         LocalDate fin = LocalDate.now().plusDays(5);
 
         List<Vehicule> dispos = vehiculeRepository.rechercherVehiculesDisponibles(
-                "Tunis", CategorieVehicule.ECONOMIQUE, debut, fin);
+                "Tunis", CategorieVehicule.UTILITAIRE, debut, fin);
 
         assertThat(dispos).extracting(Vehicule::getIdVehicule).doesNotContain(clio.getIdVehicule());
     }
