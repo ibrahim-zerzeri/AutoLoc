@@ -1833,7 +1833,7 @@
 					]
 				},
 				{
-					"name": "12. Employés par agence et rôle (Query Method: findByAgence_IdAndRole)",
+					"name": "12. Employés par agence et rôle (Query Method: findByAgence_IdAgenceAndRole)",
 					"request": {
 						"method": "GET",
 						"url": {
@@ -1871,7 +1871,7 @@
 					]
 				},
 				{
-					"name": "13. Paiements par contrat (Query Method: findByContrat_Id)",
+					"name": "13. Paiements par contrat (Query Method: findByContrat_IdContrat)",
 					"request": {
 						"method": "GET",
 						"url": {

@@ -93,7 +93,7 @@ public class ReservationController {
     }
 
     @Operation(summary = "Chiffre d'affaires agrégé par agence (JPQL Exercice 9.1)")
-    @GetMapping({"/chiffre-affaires-agences", "/chiffre-affaires/agences"})
+    @GetMapping("/chiffre-affaires-agences")
     public ResponseEntity<List<ChiffreAffaireAgenceDTO>> chiffreAffaireParAgence() {
         return ResponseEntity.ok(contratService.chiffreAffaireParAgence());
     }

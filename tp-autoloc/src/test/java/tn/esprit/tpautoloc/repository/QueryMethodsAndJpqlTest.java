@@ -135,7 +135,9 @@ class QueryMethodsAndJpqlTest {
         c1.setMontantTotal(new BigDecimal("320.00"));
         c1.setValide(true);
         c1.setReservation(res1);
-        contratRepository.save(c1);
+        c1 = contratRepository.save(c1);
+        res1.setContrat(c1);
+        reservationRepository.save(res1);
     }
 
     // ==========================================
@@ -145,13 +147,15 @@ class QueryMethodsAndJpqlTest {
     @Test
     void testVehiculeFindByAgenceVille() {
         List<Vehicule> vehicules = vehiculeRepository.findByAgenceVille("Tunis");
-        assertThat(vehicules).hasSizeGreaterThanOrEqualTo(2);
-        assertTrue(vehicules.stream().allMatch(v -> "Tunis".equals(v.getAgence().getVille())));
+        assertThat(vehicules).extracting(Vehicule::getIdVehicule)
+                .contains(clio.getIdVehicule(), golf.getIdVehicule());
+        assertTrue(vehicules.stream()
+                .allMatch(v -> v.getAgence() != null && "Tunis".equalsIgnoreCase(v.getAgence().getVille().trim())));
     }
 
     @Test
     void testVehiculeFindByStatutAndAgenceId() {
-        List<Vehicule> vehicules = vehiculeRepository.findByStatutAndAgence_Id(
+        List<Vehicule> vehicules = vehiculeRepository.findByStatutAndAgence_IdAgence(
                 StatutVehicule.DISPONIBLE, agenceTunis.getIdAgence());
         assertThat(vehicules).hasSizeGreaterThanOrEqualTo(2);
     }
@@ -178,7 +182,7 @@ class QueryMethodsAndJpqlTest {
 
     @Test
     void testVehiculeExistsAndCount() {
-        boolean exists = vehiculeRepository.existsByIdAndStatut(clio.getIdVehicule(), StatutVehicule.DISPONIBLE);
+        boolean exists = vehiculeRepository.existsByIdVehiculeAndStatut(clio.getIdVehicule(), StatutVehicule.DISPONIBLE);
         assertTrue(exists);
 
         long count = vehiculeRepository.countByStatut(StatutVehicule.DISPONIBLE);
@@ -211,28 +215,56 @@ class QueryMethodsAndJpqlTest {
 
     @Test
     void testRechercherVehiculesDisponiblesSansChevauchement() {
-        // La clio a une réservation du +2 au +6.
-        // Si on cherche du +10 au +12 à Tunis en ECONOMIQUE : la clio DOIT être disponible !
+        // La clio (CITADINE) a une réservation du +2 au +6.
+        // Si on cherche du +10 au +12 à Tunis en CITADINE : la clio DOIT être disponible !
         LocalDate debut = LocalDate.now().plusDays(10);
         LocalDate fin = LocalDate.now().plusDays(12);
 
         List<Vehicule> dispos = vehiculeRepository.rechercherVehiculesDisponibles(
-                "Tunis", CategorieVehicule.BERLINE, debut, fin);
+                "Tunis", CategorieVehicule.CITADINE, debut, fin);
 
         assertThat(dispos).extracting(Vehicule::getIdVehicule).contains(clio.getIdVehicule());
     }
 
     @Test
     void testRechercherVehiculesDisponiblesAvecChevauchementExclu() {
-        // La clio est réservée du +2 au +6.
-        // Si on cherche du +3 au +5 : la clio NE DOIT PAS être retournée !
+        // La clio (CITADINE) est réservée du +2 au +6.
+        // Si on cherche du +3 au +5 en CITADINE : la clio NE DOIT PAS être retournée !
         LocalDate debut = LocalDate.now().plusDays(3);
         LocalDate fin = LocalDate.now().plusDays(5);
 
         List<Vehicule> dispos = vehiculeRepository.rechercherVehiculesDisponibles(
-                "Tunis", CategorieVehicule.UTILITAIRE, debut, fin);
+                "Tunis", CategorieVehicule.CITADINE, debut, fin);
 
         assertThat(dispos).extracting(Vehicule::getIdVehicule).doesNotContain(clio.getIdVehicule());
+    }
+
+    @Test
+    void testReservationEmployeEtPaiementQueryMethods() {
+        assertThat(reservationRepository.findByClient_IdClient(clientAli.getIdClient())).hasSize(2);
+        assertThat(reservationRepository.findByVehicule_IdVehiculeAndStatutNot(clio.getIdVehicule(), StatutReservation.ANNULEE))
+                .isNotEmpty();
+        assertThat(reservationRepository.findByStatutAndVehicule_Agence_IdAgence(
+                StatutReservation.CONFIRMEE, agenceTunis.getIdAgence())).hasSizeGreaterThanOrEqualTo(2);
+        assertTrue(reservationRepository.existsByVehicule_IdVehiculeAndStatut(
+                clio.getIdVehicule(), StatutReservation.CONFIRMEE));
+
+        Employe emp = new Employe();
+        emp.setNom("Sassi");
+        emp.setPrenom("Karim");
+        emp.setRole(RoleEmploye.AGENT);
+        emp.setAgence(agenceTunis);
+        employeRepository.save(emp);
+        assertThat(employeRepository.findByAgence_IdAgenceAndRole(agenceTunis.getIdAgence(), RoleEmploye.AGENT))
+                .isNotEmpty();
+
+        Contrat contrat = contratRepository.findAll().get(0);
+        Paiement paiement = new Paiement();
+        paiement.setMontant(new BigDecimal("320.00"));
+        paiement.setDatePaiement(LocalDate.now());
+        paiement.setContrat(contrat);
+        paiementRepository.save(paiement);
+        assertThat(paiementRepository.findByContrat_IdContrat(contrat.getIdContrat())).isNotEmpty();
     }
 
     // ==========================================

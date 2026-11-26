@@ -21,19 +21,11 @@ public interface IVehiculeRepository extends JpaRepository<Vehicule, Long> {
 
     List<Vehicule> findByAgenceVille(String ville);
 
-    List<Vehicule> findByAgence_Ville(String ville);
-
-    @Query("SELECT v FROM Vehicule v WHERE v.statut = :statut AND v.agence.idAgence = :agenceId")
-    List<Vehicule> findByStatutAndAgence_Id(@Param("statut") StatutVehicule statut, @Param("agenceId") Long agenceId);
-
     List<Vehicule> findByStatutAndAgence_IdAgence(StatutVehicule statut, Long agenceId);
 
     Page<Vehicule> findByStatut(StatutVehicule statut, Pageable pageable);
 
     List<Vehicule> findByAgence_VilleAndCategorie(String ville, CategorieVehicule categorie);
-
-    @Query("SELECT COUNT(v) > 0 FROM Vehicule v WHERE v.idVehicule = :vehiculeId AND v.statut = :statut")
-    boolean existsByIdAndStatut(@Param("vehiculeId") Long vehiculeId, @Param("statut") StatutVehicule statut);
 
     boolean existsByIdVehiculeAndStatut(Long vehiculeId, StatutVehicule statut);
 

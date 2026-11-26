@@ -94,7 +94,7 @@ public class PaiementServiceImpl implements IPaiementService {
     @Override
     @Transactional(readOnly = true)
     public List<PaiementDTO> findByContratId(Long contratId) {
-        return paiementRepository.findByContrat_Id(contratId).stream()
+        return paiementRepository.findByContrat_IdContrat(contratId).stream()
                 .map(paiementMapper::toDto)
                 .toList();
     }

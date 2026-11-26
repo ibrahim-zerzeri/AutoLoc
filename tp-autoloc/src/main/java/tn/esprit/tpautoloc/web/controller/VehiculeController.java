@@ -22,7 +22,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping({"/vehicules", "/jpql/vehicules"})
+@RequestMapping("/vehicules")
 @RequiredArgsConstructor
 @Tag(name = "Véhicules", description = "Gestion des véhicules, recherches avancées et requêtes JPQL")
 public class VehiculeController {
@@ -108,7 +108,7 @@ public class VehiculeController {
     }
 
     @Operation(summary = "Recherche de véhicules par statut avec pagination (Query Method)")
-    @GetMapping({"/statut", "/recherche/statut"})
+    @GetMapping("/statut")
     public ResponseEntity<Page<VehiculeDTO>> findByStatut(
             @RequestParam StatutVehicule statut,
             @RequestParam(defaultValue = "0") int page,

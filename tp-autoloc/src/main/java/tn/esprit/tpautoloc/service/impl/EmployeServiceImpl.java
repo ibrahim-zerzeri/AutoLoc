@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.tpautoloc.domain.Agence;
 import tn.esprit.tpautoloc.domain.Employe;
+import tn.esprit.tpautoloc.domain.enums.RoleEmploye;
 import tn.esprit.tpautoloc.exception.ResourceNotFoundException;
 import tn.esprit.tpautoloc.repository.IAgenceRepository;
 import tn.esprit.tpautoloc.repository.IEmployeRepository;
@@ -101,7 +102,7 @@ public class EmployeServiceImpl implements IEmployeService {
 
     @Override
     @Transactional
-    public List<Employe> findByAgenceIdAndRole(Long agenceId, tn.esprit.tpautoloc.domain.enums.RoleEmploye role) {
-        return employeRepository.findByAgence_IdAndRole(agenceId, role);
+    public List<Employe> findByAgenceIdAndRole(Long agenceId, RoleEmploye role) {
+        return employeRepository.findByAgence_IdAgenceAndRole(agenceId, role);
     }
 }

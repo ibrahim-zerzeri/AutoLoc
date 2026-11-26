@@ -26,8 +26,8 @@ Spring Data JPA analyse le nom de la méthode selon une convention stricte :
 | `IClientRepository` | `findByEmail(String email)` | Recherche exacte |
 | `IClientRepository` | `findByNomContaining(String nom)` | `v.nom LIKE %:nom%` |
 | `IClientRepository` | `existsByEmail(String email)` | `SELECT CASE WHEN COUNT(c) > 0 THEN TRUE ELSE FALSE ...` |
-| `IEmployeRepository` | `findByAgence_IdAndRole(Long agenceId, RoleEmploye role)` | Filtre sur la clé étrangère de l'agence et le rôle |
-| `IPaiementRepository` | `findByContrat_Id(Long contratId)` | `p.contrat.idContrat = :contratId` |
+| `IEmployeRepository` | `findByAgence_IdAgenceAndRole(Long agenceId, RoleEmploye role)` | Filtre sur la clé étrangère de l'agence et le rôle |
+| `IPaiementRepository` | `findByContrat_IdContrat(Long contratId)` | `p.contrat.idContrat = :contratId` |
 
 ---
 
